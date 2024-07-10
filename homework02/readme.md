@@ -27,7 +27,9 @@
 
 Пример работы игры:
 
-$ python loto.py
+```bash
+~$ python loto.py
 Введите имя первого игрока: Alice
 Введите имя второго игрока (компьютера): Computer
 Let's play Lotto!
+
