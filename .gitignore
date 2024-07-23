@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+*.pyc
+*.pyo
+.DS_Store
+blog.db
 
 # Virtual environment
 venv/
-
-*.txt
