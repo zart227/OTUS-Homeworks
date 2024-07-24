@@ -1,0 +1,24 @@
+/* Сброс отступов и границ для body */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Основное содержание страницы */
+main {
+    flex: 1;
+    overflow-y: auto; /* Добавляем вертикальную прокрутку */
+    padding: 20px;
+    /* Устанавливаем фиксированную высоту, чтобы увидеть эффект прокрутки */
+    max-height: calc(100vh - 137px); /* Учитываем высоту футера */
+}
+
+/* Стили для футера */
+.footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    padding: 10px 0;
+}
