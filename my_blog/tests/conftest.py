@@ -1,6 +1,6 @@
 import pytest
-from blog.models import engine, Base, session
-from blog.setup import setup_data
+from app.models import engine, Base, session
+from app.setup import setup_data
 
 @pytest.fixture(scope='module')
 def setup_database():

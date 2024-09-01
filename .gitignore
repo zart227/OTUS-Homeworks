@@ -9,4 +9,6 @@ __pycache__/
 blog.db
 
 # Virtual environment
-venv/
+*venv/
+
+.env

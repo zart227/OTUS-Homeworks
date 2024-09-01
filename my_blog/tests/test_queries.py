@@ -1,6 +1,6 @@
 import pytest
-from blog.queries import get_posts_by_user_with_tags
-from blog.models import session, User, Tag
+from app.queries import get_posts_by_user_with_tags
+from app.models import session, User, Tag
 
 def test_get_posts_by_user_with_tags(setup_database):
     user = session.query(User).filter_by(username='alice').first()

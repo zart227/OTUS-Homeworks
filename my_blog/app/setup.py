@@ -1,8 +1,11 @@
-from blog.models import User, Post, Tag, session
+from app.models import User, Post, Tag, session
 
 def setup_data():
     user1 = User(username='alice')
+    user1.set_password('password123')
+
     user2 = User(username='bob')
+    user2.set_password('password456')
 
     tag1 = Tag(name='Python')
     tag2 = Tag(name='Django')

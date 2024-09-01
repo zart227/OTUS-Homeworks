@@ -1,4 +1,4 @@
-from blog.models import session, User, Post, Tag
+from app.models import session, User, Post, Tag
 
 def test_user_creation(setup_database):
     user = session.query(User).filter_by(username='alice').first()
