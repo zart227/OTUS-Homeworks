@@ -39,10 +39,6 @@ async def new_post(request: Request, current_user: User = Depends(get_current_us
     context = {
         "current_user": current_user,
         "request": request,
-    } 
-    context = {
-        "current_user": current_user,
-        "request": request,
     }
     return templates.TemplateResponse("new_post.html", context)
 
@@ -93,7 +89,7 @@ async def get_post(request: Request, post_id: int, current_user: User = Depends(
         "request": request,
         "post": post
     }
-    return templates.TemplateResponse("post.html", {"request": request, "post": post})
+    return templates.TemplateResponse("post.html", context)
 
 @router.get("/{post_id}/edit", response_class=HTMLResponse, name="edit_post")
 async def edit_post(request: Request, post_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -109,14 +105,14 @@ async def edit_post(request: Request, post_id: int, current_user: User = Depends
         "request": request,
         "post": post
     }
-    return templates.TemplateResponse("edit_post.html", {"request": request, "post": post})
+    return templates.TemplateResponse("edit_post.html", context)
 
 @router.post("/{post_id}/update", response_class=RedirectResponse, name="update_post")
 async def update_post(
     request: Request,
     response: Response,
     post_id: int,
-    title: str = Form(...),  # Используем Form для получения данных формы
+    title: str = Form(...),
     content: str = Form(...),
     tags: str = Form(...),
     current_user: User = Depends(get_current_user),
@@ -128,32 +124,42 @@ async def update_post(
     if post.author.id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to update this post")
 
-    # Обновляем поля поста
+    # Обновляем заголовок и контент поста
     post.title = title
     post.content = content
 
     # Обработка тегов
-    tag_names = [tag_name.strip() for tag_name in tags.split(',')]  # Разделение строки тегов
-    
-        
-    # Проверяем существование тегов и создаем новые, если не найдены
-    tag_objects = []
-    for tag_name in tag_names:
-        tag = db.query(Tag).filter(Tag.name == tag_name).first()
-        if tag is None:
-            tag = Tag(name=tag_name)
-            db.add(tag)
-            db.commit()
-            db.refresh(tag)
-        tag_objects.append(tag)
-    
-    post.tags = [tag for tag in tag_objects if tag]
+    new_tag_names = set(tag_name.strip() for tag_name in tags.split(','))
+    current_tag_names = set(tag.name for tag in post.tags)
 
-    db.commit()
+    # Теги для удаления (связь между тегом и постом)
+    tags_to_remove = current_tag_names - new_tag_names
+    # Теги для добавления (новые связи)
+    tags_to_add = new_tag_names - current_tag_names
 
-    response=RedirectResponse(url=f"/posts/{post_id}", status_code=status.HTTP_303_SEE_OTHER)
+    # Удаление связи между постом и тегами
+    for tag_name in tags_to_remove:
+        tag_to_remove = db.query(Tag).filter(Tag.name == tag_name).first()
+        if tag_to_remove:
+            post.tags.remove(tag_to_remove)
+
+    # Добавление новых тегов и установление связи
+    for tag_name in tags_to_add:
+        tag_to_add = db.query(Tag).filter(Tag.name == tag_name).first()
+        if not tag_to_add:
+            # Если тега нет в базе данных, создаем его
+            tag_to_add = Tag(name=tag_name)
+            db.add(tag_to_add)
+            db.commit()  # Фиксируем добавление нового тега в базу
+        post.tags.append(tag_to_add)
+
+    db.commit()  # Сохраняем изменения поста
+
+    # Редирект и установка сообщения
+    response = RedirectResponse(url=f"/posts/{post_id}", status_code=status.HTTP_303_SEE_OTHER)
     set_message_cookie(response, "Post updated successfully", "success")
     return response
+
 
 @router.post("/{post_id}/delete", response_class=RedirectResponse, name="delete_post")
 async def delete_post(
