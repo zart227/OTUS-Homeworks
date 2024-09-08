@@ -16,11 +16,15 @@ class CourseCreateView(CreateView):
     model = Course
     template_name = 'courses/course_form.html'
     fields = ['name', 'description', 'instructor', 'start_date', 'end_date']
+    success_url = reverse_lazy('course-list') 
 
 class CourseUpdateView(UpdateView):
     model = Course
     template_name = 'courses/course_form.html'
     fields = ['name', 'description', 'instructor', 'start_date', 'end_date']
+    
+    def get_success_url(self):
+        return reverse_lazy('course-detail', kwargs={'pk': self.object.pk})
 
 class CourseDeleteView(DeleteView):
     model = Course

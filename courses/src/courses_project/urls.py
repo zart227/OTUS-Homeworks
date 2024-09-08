@@ -23,7 +23,7 @@ from courses_app.views import CourseListView, CourseDetailView, CourseCreateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('courses/', CourseListView.as_view(), name='course-list'),
-    path('', RedirectView.as_view(url='/courses/', permanent=True)),  # Перенаправление с корневого URL на 'courses/'
+    path('', RedirectView.as_view(url='/courses/', permanent=True)),
     path('courses/<int:pk>/', CourseDetailView.as_view(), name='course-detail'),
     path('courses/new/', CourseCreateView.as_view(), name='course-create'),
     path('courses/<int:pk>/edit/', CourseUpdateView.as_view(), name='course-update'),
