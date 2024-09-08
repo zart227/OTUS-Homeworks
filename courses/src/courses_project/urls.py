@@ -14,10 +14,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import RedirectView
-from courses_app.views import CourseListView, CourseDetailView, CourseCreateView, CourseUpdateView, CourseDeleteView
+from courses_app.views import CourseListView, CourseDetailView, CourseCreateView, CourseUpdateView, CourseDeleteView, InstructorDetailView
 
 
 urlpatterns = [
@@ -28,4 +29,11 @@ urlpatterns = [
     path('courses/new/', CourseCreateView.as_view(), name='course-create'),
     path('courses/<int:pk>/edit/', CourseUpdateView.as_view(), name='course-update'),
     path('courses/<int:pk>/delete/', CourseDeleteView.as_view(), name='course-delete'),
-]
+    path('instructors/<int:pk>/', InstructorDetailView.as_view(), name='instructor-detail'),
+]   
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

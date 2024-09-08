@@ -6,7 +6,7 @@
 <body>
     <h1>{{ course.name }}</h1>
     <p>{{ course.description }}</p>
-    <p>Instructor: {{ course.instructor.name }}</p>
+    <p>Instructor: <a href="{% url 'instructor-detail' course.instructor.id %}">{{ course.instructor.name }}</a></p>
     <p>Start Date: {{ course.start_date }}</p>
     <p>End Date: {{ course.end_date }}</p>
     <a href="{% url 'course-update' course.id %}">Edit</a>

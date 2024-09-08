@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ instructor.name }} - Courses</title>
+</head>
+<body>
+    <h1>Courses taught by {{ instructor.name }}</h1>
+    <ul>
+        {% for course in courses %}
+            <li><a href="{% url 'course-detail' course.id %}">{{ course.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'course-list' %}">Back to course list</a>
+</body>
+</html>
