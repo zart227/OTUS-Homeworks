@@ -1,5 +1,12 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+from django_rq import get_queue
+from .forms import ContactForm
+from rq import Queue
+from .tasks import send_contact_email
 from .models import Course, Instructor
 
 class CourseListView(ListView):
@@ -52,3 +59,26 @@ class InstructorDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['courses'] = self.object.course_set.all()
         return context
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # Отправляем сообщения в очередь
+            queue = get_queue('default')
+            queue.enqueue(send_contact_email, email, name, message)
+            
+            return redirect('contact-success')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'courses/contact.html', {'form': form})
+
+
+def contact_success_view(request):
+    return render(request, 'courses/contact_success.html')

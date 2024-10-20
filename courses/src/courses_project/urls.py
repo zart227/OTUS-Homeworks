@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 from courses_app.views import CourseListView, CourseDetailView, CourseCreateView, CourseUpdateView, CourseDeleteView, InstructorDetailView
-
+from courses_app.views import contact_view, contact_success_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +30,10 @@ urlpatterns = [
     path('courses/<int:pk>/edit/', CourseUpdateView.as_view(), name='course-update'),
     path('courses/<int:pk>/delete/', CourseDeleteView.as_view(), name='course-delete'),
     path('instructors/<int:pk>/', InstructorDetailView.as_view(), name='instructor-detail'),
-]   
+    path('contact/', contact_view, name='contact'),
+    path('contact-success/', contact_success_view, name='contact-success'),
+]
+
 
 if settings.DEBUG:
     import debug_toolbar

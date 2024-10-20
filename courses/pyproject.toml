@@ -10,6 +10,7 @@ packages = [{include = "courses", from = "src"}]
 python = "^3.10"
 django = "^5.1.1"
 django-debug-toolbar = "^4.4.6"
+django-rq = "^2.10.2"
 
 
 [build-system]
